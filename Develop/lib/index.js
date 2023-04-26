@@ -51,8 +51,6 @@ function createManager() {
     .then(({ name, id, email, officenum }) => {
       const newManager = new Manager(name, id, email, officenum);
       team.push(newManager);
-      console.log(newManager);
-      console.log(team);
       selectEmployee();
     });
 }
@@ -113,8 +111,6 @@ function newEngineer() {
     .then(({ name, id, email, username }) => {
       const newEmployee = new Engineer(name, id, email, username);
       team.push(newEmployee);
-      console.log(newEmployee);
-      console.log(team);
       selectEmployee();
     });
 }
@@ -146,8 +142,6 @@ function newIntern() {
     .then(({ name, id, email, school }) => {
       const newIntern = new Intern(name, id, email, school);
       team.push(newIntern);
-      console.log(newIntern);
-      console.log(team);
       selectEmployee();
     });
 }
