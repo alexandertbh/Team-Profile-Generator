@@ -5,23 +5,55 @@ const Manager = require("./Manager");
 const fs = require("fs");
 const createPage = require("../util/generateHtml");
 const Engineer = require("./Engineer");
-const generateHtml = require("../util/generateHtml");
 
-const employees = [];
+const team = [];
 
-function addEmployee() {
+function newTeam() {
   inquirer
     .prompt([
       {
         type: "confirm",
-        message: "would you like to add a new employee?",
-        name: "employee",
+        message: "would you like to create a new team?",
+        name: "newTeam",
       },
     ])
-    .then(({ employee }) => {
-      if (employee) {
-        selectEmployee();
+    .then(({ newTeam }) => {
+      if (newTeam) {
+        createManager();
       }
+    });
+}
+
+function createManager() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the Manager's name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the Manager's id?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the Manager's email?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the manager's office number?",
+        name: "officenum",
+      },
+    ])
+    .then(({ name, id, email, officenum }) => {
+      const newManager = new Manager(name, id, email, officenum);
+      team.push(newManager);
+      console.log(newManager);
+      console.log(team);
+      selectEmployee();
     });
 }
 
@@ -30,8 +62,8 @@ function selectEmployee() {
     .prompt([
       {
         type: "list",
-        choices: ["Engineer", "Manager", "Intern"],
-        message: "What kind of employee would you like to add?",
+        choices: ["Engineer", "Intern", "I don't want to add any team members"],
+        message: "What kind of employee would you like to add to the team?",
         name: "newEmployee",
       },
     ])
@@ -42,8 +74,14 @@ function selectEmployee() {
       if (newEmployee === "Intern") {
         newIntern();
       }
-      if (newEmployee === "Manager") {
-        newManager();
+      if (newEmployee === "I don't want to add any team members") {
+        fs.writeFile("./index.html", createPage(team), (err) => {
+          if (err) {
+            throw err;
+          } else {
+            console.log("your html has been generated! Check index.html");
+          }
+        });
       }
     });
 }
@@ -72,22 +110,46 @@ function newEngineer() {
         name: "username",
       },
     ])
-    .then(({ answers }) => {
-      const newEmployee = new Engineer(
-        answers.name,
-        answers.id,
-        answers.email,
-        answers.github
-      );
-      employees.push(newEmployee);
+    .then(({ name, id, email, username }) => {
+      const newEmployee = new Engineer(name, id, email, username);
+      team.push(newEmployee);
       console.log(newEmployee);
-      console.log(employees);
-      generateHtml(employees);
+      console.log(team);
+      selectEmployee();
     });
 }
 
-function newIntern() {}
+function newIntern() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the intern's name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the interns's id?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the intern's email?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the intern's school?",
+        name: "school",
+      },
+    ])
+    .then(({ name, id, email, school }) => {
+      const newIntern = new Intern(name, id, email, school);
+      team.push(newIntern);
+      console.log(newIntern);
+      console.log(team);
+      selectEmployee();
+    });
+}
 
-function newManager() {}
-
-addEmployee();
+newTeam();
